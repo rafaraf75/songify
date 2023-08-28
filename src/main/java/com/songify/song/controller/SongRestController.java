@@ -1,6 +1,13 @@
-package com.songify;
+package com.songify.song.controller;
 
+import com.songify.song.dto.DeleteSongResponseDto;
+import com.songify.song.dto.SingleSongResponseDto;
+import com.songify.song.dto.SongRequestDto;
+import com.songify.song.dto.SongResponseDto;
+import com.songify.song.error.SongNotFoundException;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @Log4j2
-public class SongsController {
+public class SongRestController {
 
     Map<Integer, String> database = new HashMap<>(Map.of(
             1, "shawnmendes song1",
@@ -44,11 +51,20 @@ public class SongsController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/songs")
-    public ResponseEntity<SingleSongResponseDto> postSong(@RequestBody SongRequestDto request){
+    public ResponseEntity<SingleSongResponseDto> postSong(@RequestBody @Valid SongRequestDto request){
         String songName = request.songName();
         log.info("adding new song: "+songName);
         database.put(database.size()+1,songName);
         return ResponseEntity.ok(new SingleSongResponseDto(songName));
     }
+    @DeleteMapping("/songs/{id}")
+    public ResponseEntity<DeleteSongResponseDto> deleteSongByIdUsingPathVariable(@PathVariable Integer id){
+        if(!database.containsKey(id)){
+            throw new SongNotFoundException("song with id: "+id+" not found");
 
+        }
+        database.remove(id);
+        DeleteSongResponseDto deleteSongResponseDto = new DeleteSongResponseDto("song with id: "+id+" deleted", HttpStatus.OK);
+        return ResponseEntity.ok(deleteSongResponseDto);
+    }
 }
