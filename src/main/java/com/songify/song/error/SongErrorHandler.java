@@ -14,8 +14,8 @@ public class SongErrorHandler {
     @ExceptionHandler(SongNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDeleteSongResponseDto handleException(SongNotFoundException exception){
-        log.warn("error deleting song");
-        return new ErrorDeleteSongResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND);
+    public ErrorSongResponseDto handleException(SongNotFoundException exception){
+        log.warn("SongNotFoundException while accesing song");
+        return new ErrorSongResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
