@@ -1,10 +1,12 @@
-package com.songify.song.controller;
+package com.songify.song.infrastructure.controller;
 
-import com.songify.song.dto.request.PartiallyUpdateSongRequestDto;
-import com.songify.song.dto.request.CreateSongRequestDto;
-import com.songify.song.dto.request.UpdateSongRequestDto;
-import com.songify.song.dto.response.*;
-import com.songify.song.error.SongNotFoundException;
+import com.songify.song.domian.service.SongMapper;
+import com.songify.song.infrastructure.controller.dto.request.PartiallyUpdateSongRequestDto;
+import com.songify.song.infrastructure.controller.dto.request.CreateSongRequestDto;
+import com.songify.song.infrastructure.controller.dto.request.UpdateSongRequestDto;
+import com.songify.song.infrastructure.controller.dto.response.*;
+import com.songify.song.domian.model.SongNotFoundException;
+import com.songify.song.domian.model.Song;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -54,11 +56,14 @@ public class SongRestController {
 
     @PostMapping
     public ResponseEntity<CreateSongResponseDto> postSong(@RequestBody @Valid CreateSongRequestDto request) {
-        Song song = new Song(request.songName(), request.artist());
+        Song song = SongMapper.mapFromCreateSongRequestDtoToSongSong(request);
         log.info("adding new song: " + song);
         database.put(database.size() + 1, song);
-        return ResponseEntity.ok(new CreateSongResponseDto(song));
+        CreateSongResponseDto body = SongMapper.mapFromSongCreateSongResponseDto(song);
+        return ResponseEntity.ok(body);
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<DeleteSongResponseDto> deleteSongByIdUsingPathVariable(@PathVariable Integer id) {
