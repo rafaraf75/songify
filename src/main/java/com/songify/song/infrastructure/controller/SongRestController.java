@@ -1,6 +1,6 @@
 package com.songify.song.infrastructure.controller;
 
-import com.songify.song.domian.service.SongMapper;
+import com.songify.song.infrastructure.controller.error.SongMapper;
 import com.songify.song.infrastructure.controller.dto.request.PartiallyUpdateSongRequestDto;
 import com.songify.song.infrastructure.controller.dto.request.CreateSongRequestDto;
 import com.songify.song.infrastructure.controller.dto.request.UpdateSongRequestDto;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,10 +37,10 @@ public class SongRestController {
                     .stream()
                     .limit(limit)
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            GetAllSongsResponseDto response = new GetAllSongsResponseDto(limitedMap);
+            GetAllSongsResponseDto response = new GetAllSongsResponseDto((List<Song>) limitedMap);
             return ResponseEntity.ok(response);
         }
-        GetAllSongsResponseDto response = new GetAllSongsResponseDto(database);
+        GetAllSongsResponseDto response = new GetAllSongsResponseDto((List<Song>) database);
         return ResponseEntity.ok(response);
     }
 
@@ -88,9 +89,9 @@ public class SongRestController {
         Song newSong = new Song(newSongName, newArtist);
         Song oldSong = database.put(id, newSong);
         log.info("Update song with id: " + id +
-                " whit oldSongName:" + oldSong.name() + " to newSongName: " +newSong.name() +
-                " oldArtist: " + oldSong.artist() + " to newArtist: " + newSong.artist());
-        return ResponseEntity.ok(new UpdateSongResponseDto(newSong.name(), newSong.artist()));
+                " whit oldSongName:" + oldSong.getName() + " to newSongName: " +newSong.getName() +
+                " oldArtist: " + oldSong.getArtist() + " to newArtist: " + newSong.getArtist());
+        return ResponseEntity.ok(new UpdateSongResponseDto(newSong.getName(), newSong.getArtist()));
 
     }
 
@@ -106,13 +107,13 @@ public class SongRestController {
             builder.name(request.song());
             log.info("partially updaten song name");
         } else{
-            builder.name(songFromDatabase.name());
+            builder.name(songFromDatabase.getName());
         }
         if(request.artist() != null) {
             builder.artist(request.artist());
             log.info("partially updaten song artist");
         } else{
-            builder.artist(songFromDatabase.artist());
+            builder.artist(songFromDatabase.getArtist());
         }
         Song updatedSong  = builder.build();
         database.put(id, updatedSong);

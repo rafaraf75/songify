@@ -1,4 +1,4 @@
-package com.songify.song.domian.service;
+package com.songify.song.infrastructure.controller.error;
 
 import com.songify.song.infrastructure.controller.dto.request.CreateSongRequestDto;
 import com.songify.song.infrastructure.controller.dto.response.CreateSongResponseDto;
