@@ -1,5 +1,6 @@
 package com.songify.song.infrastructure.controller;
 
+
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ public class SongViewController {
 
     @GetMapping("/")
     public String home(){
+
         return "home";
     }
     @GetMapping("/view/songs")
