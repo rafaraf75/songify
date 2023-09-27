@@ -10,6 +10,11 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 public class SongMapper {
+
+    public static SongDto mapFromSongToSongDto(Song song) {
+        return new SongDto(song.getId(), song.getName(), song.getArtist());
+
+    }
     public static Song mapFromCreateSongRequestDtoToSongSong(CreateSongRequestDto dto) {
         return new Song(dto.songName(), dto.artist());
     }
@@ -21,7 +26,8 @@ public class SongMapper {
     }
 
     public static CreateSongResponseDto mapFromSongToCreateSongResponseDto(Song song) {
-        return new CreateSongResponseDto(song);
+        SongDto SongDto = SongMapper.mapFromSongToSongDto(song);
+        return new CreateSongResponseDto(SongDto);
     }
     public static DeleteSongResponseDto mapFromSongToDeleteSongResponseDto(Long id) {
         return new DeleteSongResponseDto("You deleted song with id: " + id, HttpStatus.OK);
@@ -29,16 +35,20 @@ public class SongMapper {
     public static UpdateSongResponseDto mapFromSongToUpdateSongResponseDto(Song newSong) {
         return new UpdateSongResponseDto(newSong.getName(), newSong.getArtist());
     }
-    public static PartiallyUpdateSongResponseDto mapFromSongToPartiallyUpdateSongResponseDto(Song updatedSong) {
-        return new PartiallyUpdateSongResponseDto(updatedSong);
+    public static PartiallyUpdateSongResponseDto mapFromSongToPartiallyUpdateSongResponseDto(Song song) {
+        SongDto SongDto = SongMapper.mapFromSongToSongDto(song);
+        return new PartiallyUpdateSongResponseDto(SongDto);
     }
     public static GetSongResponseDto mapFromSongToGetSongResponseDto(Song song) {
-        return new GetSongResponseDto(song);
+        SongDto songDto = SongMapper.mapFromSongToSongDto(song);
+        return new GetSongResponseDto(songDto);
 
     }
 
-    public static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(List<Song> database) {
-        return new GetAllSongsResponseDto(database);
+    public static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(List<Song> songs) {
+        List<SongDto> songsDtos = songs.stream()
+                .map(SongMapper::mapFromSongToSongDto).toList();
+        return new GetAllSongsResponseDto(songsDtos);
     }
 
 

@@ -4,6 +4,7 @@ import com.songify.song.domian.model.Song;
 import com.songify.song.domian.model.SongNotFoundException;
 import com.songify.song.domian.repository.SongRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,14 +19,10 @@ public class SongRetriever {
     SongRetriever(SongRepository songRepository) {
         this.songRepository = songRepository;
     }
-    public List<Song> findAll() {
+
+    public List<Song> findAll(Pageable pageable) {
         log.info("Retrieving all songs: ");
-        return songRepository.findAll();
-    }
-    public List<Song> findAllLimitedBy(Integer limit) {
-        return songRepository.findAll()
-                .stream().limit(limit)
-                .toList();
+        return songRepository.findAll(pageable);
     }
 
     public Song findSongById(Long id) {
@@ -33,13 +30,10 @@ public class SongRetriever {
         return songRepository.findById(id)
                 .orElseThrow(() -> new SongNotFoundException("song with id: " + id + " not found"));
     }
+
     public void existsById(Long id) {
-        if(!songRepository.existsById(id)) {
+        if (!songRepository.existsById(id)) {
             throw new SongNotFoundException("song with id: " + id + " not found");
         }
-
-
-
     }
-
 }
